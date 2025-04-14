@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import json
 from typing import List, Dict, Any
 import time
-©
+
 # Import our modules
 from sitemap_loader import get_urls_from_sitemap
 from content_loader import (
@@ -90,11 +90,11 @@ def handle_chat_input():
     """Handle user input in the chat interface"""
     if st.session_state["chat_input"]:
         user_message = st.session_state["chat_input"]
-        
+
         # Store the user message in session state
         if "last_user_message" not in st.session_state:
             st.session_state["last_user_message"] = user_message
-            
+
         # We'll manage updating the chat history in the main app flow
         # to avoid rerun conflicts
         st.session_state["message_pending"] = True
@@ -1105,41 +1105,44 @@ elif selected_tab == "Chat":
                     st.experimental_rerun()
 
             # First check if we have a pending message to process
-            if st.session_state.get("message_pending", False) and "last_user_message" in st.session_state:
+            if (
+                st.session_state.get("message_pending", False)
+                and "last_user_message" in st.session_state
+            ):
                 # Get the message that needs to be processed
                 user_message = st.session_state["last_user_message"]
-                
+
                 # Add the user message to chat history
                 st.session_state["chat_messages"].append(
                     {"role": "user", "content": user_message}
                 )
-                
+
                 # Set up a spinner while generating the response
                 with st.spinner("Generating response..."):
                     # Get the response non-streaming to avoid UI flicker
                     full_response = st.session_state["chat_engine"].ask(user_message)
-                    
+
                     # Add the complete response to chat history
                     st.session_state["chat_messages"].append(
                         {"role": "assistant", "content": full_response}
                     )
-                
+
                 # Reset the pending message flags
                 st.session_state["message_pending"] = False
                 del st.session_state["last_user_message"]
-                
+
                 # The page will automatically rerun after this due to the state change
-            
+
             # Display chat messages from history with proper formatting
             messages = st.session_state["chat_messages"]
-            
+
             # Message container to keep all messages together
             with st.container():
                 for i, message in enumerate(messages):
                     # Get the message content and role
                     role = message["role"]
                     content = message["content"]
-                    
+
                     # Display with appropriate avatar and styling
                     if role == "user":
                         with st.chat_message(role, avatar="🧑‍💻"):
