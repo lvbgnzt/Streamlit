@@ -1089,14 +1089,18 @@ elif selected_tab == "Chat":
                             similarity_threshold
                         )
 
+                # Use session state to track the include_sources setting
+                if "include_sources" not in st.session_state:
+                    st.session_state["include_sources"] = True
+                
                 include_sources = st.checkbox(
-                    "Include source information in responses", value=True
+                    "Include source information in responses", 
+                    value=st.session_state["include_sources"],
+                    key="include_sources"  # This will automatically update session_state["include_sources"]
                 )
 
                 if "chat_engine" in st.session_state:
-                    st.session_state["chat_engine"].config.include_sources = (
-                        include_sources
-                    )
+                    st.session_state["chat_engine"].config.include_sources = include_sources
 
                 if st.button("Clear Chat History"):
                     st.session_state["chat_messages"] = []
@@ -1119,6 +1123,13 @@ elif selected_tab == "Chat":
 
                 # Set up a spinner while generating the response
                 with st.spinner("Generating response..."):
+                    # Ensure the include_sources setting is applied
+                    if "include_sources" not in st.session_state:
+                        st.session_state["include_sources"] = True
+                    
+                    # Update chat engine config to match the current settings
+                    st.session_state["chat_engine"].config.include_sources = st.session_state["include_sources"]
+                    
                     # Get the response non-streaming to avoid UI flicker
                     full_response = st.session_state["chat_engine"].ask(user_message)
 
