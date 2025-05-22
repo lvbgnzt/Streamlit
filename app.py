@@ -32,8 +32,7 @@ if start_search and query and SERPAPI_API_KEY and FIRECRAWL_API_KEY:
         for idx, result in enumerate(data["organic_results"][:3], start=1):
             firecrawl_result = fetch_markdown_from_url(result["link"], FIRECRAWL_API_KEY)
             url = firecrawl_result.data.metadata.sourceURL if hasattr(firecrawl_result.data.metadata, "sourceURL") else "Unbekannt"
-            st.markdown(f"### Position {idx}: {result['title']}")
-            st.markdown(f"**URL**: {url}")
+            st.markdown(f"### Position {idx}: [{url}]({url}) – {result['title']}")
             st.code(firecrawl_result.data.markdown, language="markdown")
     else:
         st.warning("Keine Ergebnisse oder Fehler bei der API.")
