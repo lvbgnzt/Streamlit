@@ -28,11 +28,6 @@ if start_search and query and SERPAPI_API_KEY and FIRECRAWL_API_KEY:
     data = search_serpapi(query, SERPAPI_API_KEY, selected_location)
 
     if "organic_results" in data:
-        for result in data["organic_results"]:
-            st.markdown(f"**[{result['title']}]({result['link']})**")
-            st.write(result.get("snippet", "Kein Snippet verfügbar."))
-        st.subheader("📦 JSON-Daten der Top 10 Ergebnisse")
-        st.json(data["organic_results"][:10])
         st.subheader("📝 Markdown-Inhalte der Top 3 Links")
         for idx, result in enumerate(data["organic_results"][:3], start=1):
             firecrawl_result = fetch_markdown_from_url(result["link"], FIRECRAWL_API_KEY)
