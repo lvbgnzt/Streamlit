@@ -7,3 +7,4 @@ openai>=1.6.0
 streamlit>=1.28.0
 pandas>=2.0.0
 matplotlib>=3.7.0
+pysqlite3-binary>=0.5.2
