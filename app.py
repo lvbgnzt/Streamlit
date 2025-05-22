@@ -1,4 +1,5 @@
 import streamlit as st
+from serpapi import GoogleSearch
 
 # SerpAPI Key (ersetze durch deinen eigenen Schlüssel)
 SERPAPI_API_KEY = "DEIN_API_KEY"
