@@ -1,33 +1,30 @@
-import streamlit as st
+from serpapi import GoogleSearch
+import requests
 
-st.set_page_config(page_title="🧠 Semantische Suche", layout="centered")
+# SerpAPI Key (ersetze durch deinen eigenen Schlüssel)
+SERPAPI_API_KEY = "DEIN_API_KEY"
 
-st.title("🔍 Semantische Suche (Demo)")
-st.write("Dies ist eine simple Streamlit-App zur interaktiven Textsuche.")
+def search_serpapi(query, api_key):
+    params = {
+        "q": query,
+        "location": "Germany",
+        "hl": "de",
+        "gl": "de",
+        "google_domain": "google.de",
+        "api_key": api_key
+    }
+    search = GoogleSearch(params)
+    return search.get_dict()
 
-# Beispielhafte "Dokumentdatenbank"
-documents = [
-    "Künstliche Intelligenz verändert die Welt.",
-    "Python ist eine vielseitige Programmiersprache.",
-    "Streamlit ermöglicht schnelle Prototypen für Daten-Apps.",
-    "Vektordatenbanken speichern semantische Informationen.",
-    "OpenAI entwickelt leistungsstarke Sprachmodelle."
-]
+query = st.text_input("Was möchtest du googeln?", "")
 
-# Nutzereingabe
-query = st.text_input("Was möchtest du suchen?", "")
-
-# "Suche" auslösen
 if query:
-    st.write(f"🔎 Ergebnisse für: *{query}*")
+    st.write(f"🔎 Ergebnisse bei Google für: *{query}*")
+    data = search_serpapi(query, SERPAPI_API_KEY)
 
-    # Platzhalter für spätere Vektorsuche: einfache Keyword-Matching-Demo
-    matches = [doc for doc in documents if query.lower() in doc.lower()]
-
-    if matches:
-        for match in matches:
-            st.success(match)
+    if "organic_results" in data:
+        for result in data["organic_results"]:
+            st.markdown(f"**[{result['title']}]({result['link']})**")
+            st.write(result.get("snippet", "Kein Snippet verfügbar."))
     else:
-        st.warning("Keine Ergebnisse gefunden. Probiere einen anderen Begriff.")
-else:
-    st.info("Gib oben einen Suchbegriff ein.")
+        st.warning("Keine Ergebnisse oder Fehler bei der API.")
