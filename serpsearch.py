@@ -14,6 +14,10 @@ def search_serpapi(query, serp_api_key, location):
 
 from firecrawl import FirecrawlApp
 
-def fetch_markdown_from_url(url: str, firecrawl_api_key: str):
-    app = FirecrawlApp(api_key=firecrawl_api_key)
-    return app.scrape_url(url, formats=['markdown'])
+def fetch_markdown_from_url(url: str, firecrawl_api_key: str, formats=None):
+    formats = formats or ['markdown']
+    try:
+        app = FirecrawlApp(api_key=firecrawl_api_key)
+        return app.scrape_url(url, formats=formats)
+    except Exception as e:
+        return {"success": False, "error": str(e)}
