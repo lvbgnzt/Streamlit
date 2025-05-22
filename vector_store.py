@@ -7,6 +7,12 @@ import os
 from datetime import datetime
 from content_loader import Page
 from text_chunker import Chunk, TextChunker, ChunkingConfig
+import pysqlite3
+import sys
+
+sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+
+import chromadb
 
 
 class ChromaConfig(BaseModel):
