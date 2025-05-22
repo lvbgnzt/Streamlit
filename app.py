@@ -1,5 +1,5 @@
 import streamlit as st
-from serpsearch import search_serpapi
+from serpsearch import search_serpapi, fetch_markdown_from_url
 
 # Standort-Auswahl Dropdown
 location_options = {
@@ -15,9 +15,15 @@ selected_location = location_options[selected_location_label]
 # SerpAPI Key (ersetze durch deinen eigenen Schlüssel)
 SERPAPI_API_KEY = st.text_input("🔑 SerpAPI API Key", type="password")
 
+# Firecrawl API Key
+FIRECRAWL_API_KEY = st.text_input("🔥 Firecrawl API Key", type="password")
+
 query = st.text_input("Was möchtest du googeln?", "")
 
-if query and SERPAPI_API_KEY:
+# Search button
+start_search = st.button("🔍 Suche starten")
+
+if start_search and query and SERPAPI_API_KEY and FIRECRAWL_API_KEY:
     st.write(f"🔎 Ergebnisse bei Google für: *{query}*")
     data = search_serpapi(query, SERPAPI_API_KEY, selected_location)
 
@@ -27,5 +33,10 @@ if query and SERPAPI_API_KEY:
             st.write(result.get("snippet", "Kein Snippet verfügbar."))
         st.subheader("📦 JSON-Daten der Top 10 Ergebnisse")
         st.json(data["organic_results"][:10])
+        st.subheader("📝 Markdown-Inhalte der Top 3 Links")
+        for result in data["organic_results"][:3]:
+            markdown = fetch_markdown_from_url(result["link"], FIRECRAWL_API_KEY)
+            st.markdown(f"### [{result['title']}]({result['link']})")
+            st.code(markdown, language="markdown")
     else:
         st.warning("Keine Ergebnisse oder Fehler bei der API.")
