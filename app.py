@@ -35,5 +35,7 @@ if start_search and query and SERPAPI_API_KEY and FIRECRAWL_API_KEY:
             st.markdown(f"### Position {idx}: {result['title']}")
             st.markdown(f"**URL**: {url}")
             st.code(firecrawl_result.data.markdown, language="markdown")
+            st.markdown("**Firecrawl API Antwort (Rohdaten):**")
+            st.json(firecrawl_result.model_dump())
     else:
         st.warning("Keine Ergebnisse oder Fehler bei der API.")
