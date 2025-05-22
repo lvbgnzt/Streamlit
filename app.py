@@ -31,11 +31,7 @@ if start_search and query and SERPAPI_API_KEY and FIRECRAWL_API_KEY:
         st.subheader("📝 Markdown-Inhalte der Top 3 Links")
         for idx, result in enumerate(data["organic_results"][:3], start=1):
             firecrawl_result = fetch_markdown_from_url(result["link"], FIRECRAWL_API_KEY)
-            url = firecrawl_result.get("data", {}).get("metadata", {}).get("sourceURL", "Unbekannt")
             st.markdown(f"### Position {idx}: {result['title']}")
-            st.markdown(f"**URL**: {url}")
-            st.code(firecrawl_result.get("data", {}).get("markdown", "Kein Markdown gefunden"), language="markdown")
-            st.markdown("**Firecrawl API Antwort (Rohdaten):**")
-            st.json(firecrawl_result.model_dump())
+            st.write(firecrawl_result)
     else:
         st.warning("Keine Ergebnisse oder Fehler bei der API.")
